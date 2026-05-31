@@ -1,0 +1,38 @@
+{
+  "goal": {
+    "context": {
+      "customer_id": "cust-001",
+      "order_id": "ord-1001",
+      "policy_id": "standard-refund-v1",
+      "request_date": "2026-05-30"
+    },
+    "intent": "refund_order",
+    "constraints": [
+      "do not refund without order ownership",
+      "do not refund outside policy window",
+      "do not create duplicate refunds"
+    ],
+    "success_type": "VerifiedRefundCommit"
+  },
+  "witnesses": [
+    {
+      "kind": "order",
+      "order_id": "ord-1001",
+      "customer_id": "cust-001",
+      "created_at": "2026-05-20",
+      "source": "orders.fixture"
+    },
+    {
+      "kind": "payment",
+      "order_id": "ord-1001",
+      "status": "captured",
+      "source": "payments.fixture"
+    },
+    {
+      "kind": "policy",
+      "policy_id": "standard-refund-v1",
+      "refund_window_days": 30,
+      "source": "policies.fixture"
+    }
+  ]
+}

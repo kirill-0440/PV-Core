@@ -1,0 +1,41 @@
+---
+schema: pvcore.bitgn_ecom1.submission_readiness.v0_1
+status: blocked
+collected_at: "2026-05-31T00:50:00Z"
+target:
+  repository: bitgn/bitgn-architectures
+  folder: 2026-05-30-ecom1
+  challenge: ecom
+  benchmark_id: bitgn/ecom1-prod
+submission:
+  draft: generated/pvcore-repo-seed/bitgn-ecom1/ACCOUNTID_pvcore-witness-geometry-agent.md
+  renderer: tools/render_pvcore_bitgn_ecom1_submission.py
+  rendered_output_dir: generated/pvcore-repo-seed/bitgn-ecom1/rendered
+required_inputs:
+  - id: bitgn_account_id
+    status: missing
+    description: Public BitGN account id token used on leaderboards and filenames.
+  - id: ecom1_prod_run_ids
+    status: missing
+    description: Eligible run ids from the blind May 30 ECOM1 PROD window.
+  - id: public_source_code_url
+    status: missing
+    description: Public GitHub URL for the PVCore implementation or architecture repository.
+  - id: model_names_and_runtime_settings
+    status: missing
+    description: Actual model names and runtime settings used for the submitted run ids.
+  - id: pr_authorization
+    status: missing
+    description: Explicit approval to create/fork/push/open a PR.
+blocked_claims:
+  - ready_for_pr
+  - leaderboard_eligible
+  - source_code_public
+  - run_ids_verified
+admissible_next_moves:
+  - Fill real BitGN account id, run ids, source code URL, and model/runtime settings.
+  - Render final markdown with tools/render_pvcore_bitgn_ecom1_submission.py.
+  - Create public PVCore repository after explicit approval.
+  - Open PR to bitgn/bitgn-architectures only after explicit approval.
+verifier: make pvcore-bitgn-ecom1-submission-check
+witness: generated/ms01-inventory/20260531T005000Z-pvcore-bitgn-ecom1-submission-witness.md
