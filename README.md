@@ -205,9 +205,26 @@ reasoning tasks.
 Run the ECOM refund example:
 
 ```bash
-PYTHONPATH=. python3 examples/ecom/run_refund.py
+python3 examples/ecom/run_refund.py
 python3 -m unittest discover -s tests
 ```
 
 The positive fixture returns a `pvcore.commit.v0_1` object. The duplicate-refund
 fixture returns a `pvcore.obstruction_report.v0_1` object.
+
+## BitGN ECOM1 Draft
+
+The repository includes a draft architecture writeup for BitGN ECOM1:
+
+```text
+bitgn-ecom1/ACCOUNTID_pvcore-witness-geometry-agent.md
+```
+
+It is not ready for submission until the placeholder account id, source code
+URL, run ids, model names, and runtime settings are replaced with real public
+values.
+
+## Publication
+
+See `docs/publication-checklist.md` before publishing the repository or opening
+an architecture PR.
