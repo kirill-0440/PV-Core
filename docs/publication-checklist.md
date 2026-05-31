@@ -20,6 +20,7 @@ writeup.
 - [ ] Replace `run-YOUR_ECOM1_PROD_RUN_ID`.
 - [ ] Fill actual model names.
 - [ ] Fill actual runtime settings.
+- [ ] Record run evidence using `docs/bitgn-runbook.md`.
 - [ ] Confirm `challenge: ecom`.
 - [ ] Confirm the run ids are eligible `bitgn/ecom1-prod` runs.
 

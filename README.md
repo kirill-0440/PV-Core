@@ -228,3 +228,5 @@ values.
 
 See `docs/publication-checklist.md` before publishing the repository or opening
 an architecture PR.
+
+For BitGN run ids, use `docs/bitgn-runbook.md`.
