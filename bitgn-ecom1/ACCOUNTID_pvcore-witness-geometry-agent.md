@@ -25,6 +25,11 @@ catalogue data, inventory, customer records, payments, policies, support
 tickets, returns, refunds, and audit trails while deciding whether to act,
 refuse, or escalate.
 
+The design follows the ECOM1 framing: agents operate inside a deterministic
+simulated commerce environment, where outcomes are judged by observable tool
+calls, state changes, required flags or references, and forbidden actions
+avoided.
+
 This draft is an architecture writeup template. It should only be submitted to
 the ECOM1 architecture repository after replacing `ACCOUNTID` and `run_ids`
 with real public values from an eligible `bitgn/ecom1-prod` run.
@@ -37,7 +42,7 @@ The main loop is:
 task
   -> reconstruct commerce context
   -> propose a candidate action
-  -> collect witnesses from the e-commerce OS
+  -> collect witnesses from the e-commerce OS sources of truth
   -> generate obligations
   -> verify obligations
   -> commit action or return obstruction
@@ -48,8 +53,8 @@ The key runtime objects are:
 - `Goal`: the customer, merchant, policy, and task context.
 - `Proposal`: the candidate checkout, refund, return, support, or refusal
   action.
-- `Witness`: catalogue rows, inventory state, customer records, payment status,
-  policy text, ticket history, and audit events supporting the proposal.
+- `Witness`: warehouse records, customer files, policy-book entries, payment
+  status, ticket history, and commerce events supporting the proposal.
 - `Obligation`: a typed claim that must be discharged before acting.
 - `Verification`: the result of checking an obligation.
 - `Commit`: an accepted action with witnesses and verification records.
@@ -63,6 +68,10 @@ The task is finished only when either:
 
 - every required obligation is accepted and the action can be committed; or
 - a blocking obligation produces an obstruction report.
+
+This matches the challenge expectation that the agent must track state across
+commerce records, use tools safely, reason over transactions and policies, and
+produce protocol-compliant outputs.
 
 ## Models
 
@@ -79,7 +88,17 @@ strict enough.
 
 ## E-commerce OS Reasoning
 
-PVCore maps each commerce subsystem into witness sources and obligations.
+PVCore maps each ECOM1 durable source of truth into witness sources and
+obligations:
+
+- Warehouse: products, SKUs, stock, fulfillment scans, and carrier evidence.
+- Customer files: account history, preferences, carts, orders, payment state,
+  and support cases.
+- Policy book: merchant rules for discounts, returns, missing packages, fraud
+  review, payment recovery, routing, and customer communication.
+
+The agent treats these as evidence sources, not as free-form prose. Retrieved
+records become witnesses only after they are attached to an obligation.
 
 ### Catalogue and product matching
 
@@ -92,6 +111,23 @@ Example obligations:
 - the requested variant matches the customer intent;
 - price, currency, and promotion constraints are consistent;
 - substitution is allowed by policy.
+
+This covers product discovery under preference, budget, availability, and
+delivery constraints.
+
+### Cart, checkout, payment recovery, and discounts
+
+Checkout actions should be witnessed by basket state, item eligibility, payment
+state, promotion rules, fraud/risk signals, and required authentication or
+payment recovery records.
+
+Example obligations:
+
+- cart mutation is authorized by the task and customer context;
+- checkout state matches the required output protocol;
+- payment failure recovery does not bypass controls such as 3DS;
+- discounts and promotions are explicitly authorized;
+- suspicious pressure for unauthorized discounts is ignored.
 
 ### Inventory, warehouses, shipping, and store coverage
 
@@ -119,6 +155,9 @@ Example obligations:
 - basket mutation is permitted;
 - customer data access is scoped to the task.
 
+This is also where privacy and customer-data minimization obligations are
+generated.
+
 ### Merchant policies and policy addenda
 
 Policy reasoning should be witness-backed. The agent should cite the active
@@ -143,6 +182,9 @@ Example obligations:
 - prior support commitments are respected;
 - return authorization is valid;
 - escalation is required for unsafe or unsupported actions.
+
+This covers missing packages, delivery issues, refunds, replacements, returns,
+and support routing.
 
 ### Audit trails, logs, and evidence
 
@@ -182,6 +224,14 @@ The agent refuses or escalates when:
 - the requested action would violate merchant or customer constraints;
 - context transport fails between user request, policy, and system state.
 
+The architecture treats business controls as mandatory. It must not bypass
+payment safety, force unauthorized discounts, invent policy approvals, leak
+customer data, or falsify commerce state.
+
+Prompt-injection and pressure-resistance are handled as obligations too:
+untrusted customer text, logs, or support messages can request an action, but
+cannot certify that the action is allowed.
+
 ## Problems
 
 Expected failure modes:
@@ -193,6 +243,9 @@ Expected failure modes:
 - Non-commuting transport: a statement valid in the customer conversation is
   not valid in the payment, inventory, or policy context.
 - Unresolved obligation: the agent cannot prove that an action is safe.
+- Protocol failure: the output is malformed or lacks required task references.
+- Privacy leak: the action exposes customer or merchant data outside the task
+  scope.
 
 ## Solutions
 
@@ -203,6 +256,9 @@ The architecture improves reliability by making failure explicit:
 - every accepted action carries witnesses;
 - unresolved obligations become obstruction reports;
 - hallucination is treated as an unreported transport defect.
+- forbidden commerce events are modeled as verifier failures before tool
+  mutation.
+- required flags, references, and output protocol fields are obligations.
 
 Things deliberately kept simple:
 
@@ -218,6 +274,8 @@ The next version should add:
 - executable verifier stubs for common commerce obligations;
 - a structured witness index over catalogue, inventory, orders, policies, and
   tickets;
+- verifiers for forbidden discount, payment-control bypass, privacy leak, fraud
+  boundary, malformed output, and missing-grounding penalties;
 - Lean definitions for the core PVCore types;
 - a replayable audit log for each benchmark task;
 - comparison tests against ungated tool-using agents;
