@@ -1,10 +1,10 @@
 ---
-source_code: https://github.com/YOUR_ACCOUNT/PVCore
+source_code: https://github.com/kirill-0440/PV-Core
 run_ids:
   - run-YOUR_ECOM1_PROD_RUN_ID
 author: ""
 author_linkedin: ""
-author_github: https://github.com/YOUR_ACCOUNT
+author_github: https://github.com/kirill-0440
 company: ""
 impact: Uses proof-carrying reasoning to turn e-commerce tasks into proposals, witnesses, obligations, verifications, and explicit obstruction reports before acting.
 challenge: ecom
@@ -26,8 +26,8 @@ tickets, returns, refunds, and audit trails while deciding whether to act,
 refuse, or escalate.
 
 This draft is an architecture writeup template. It should only be submitted to
-the ECOM1 architecture repository after replacing `ACCOUNTID`, `source_code`,
-and `run_ids` with real public values from an eligible `bitgn/ecom1-prod` run.
+the ECOM1 architecture repository after replacing `ACCOUNTID` and `run_ids`
+with real public values from an eligible `bitgn/ecom1-prod` run.
 
 ## How does it work?
 
@@ -268,4 +268,3 @@ a fallback after the model gets confused.
         v                 v
   Verified Commit   Obstruction Report
 ```
-
